@@ -8,4 +8,4 @@ Complex.o: Complex.cpp Complex.h
 	g++ -c Complex.cpp 
 
 clean:
-	rm -rf *.o all
+	rm -rf *.o complex

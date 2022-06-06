@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unistd.h>
+using namespace std;
 
 void OddOrEven(int array[], int size)
 {

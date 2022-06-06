@@ -7,20 +7,19 @@
 #include <utility>
 #include <functional>
 #include <stdexcept>
-#include <ctime>
 #include <cstdlib>
 #include <condition_variable>
 using namespace std;
 
-class thread_pool
+class ThreadPool
 {
     public:
-        explicit thread_pool(size_t thread count = thread::hardware_concurrency())
+        explicit ThreadPool(size_t thread count = thread::hardware_concurrency())
         {
             if(!thread_count)
                 throw invalid_argument("bad thread count");
             m_threads.reserve(thread_count);
-            for(auto i = 0; i < thread_count; i++)
+            for(auto i = 0; i < thread_count; ++i)
             {
                 m_threads.push_back(thread([this]()
                 {
@@ -43,7 +42,7 @@ class thread_pool
             }
         }
           
-        ~thread_pool()
+        ~ThreadPool()
         {
             {
                 unique_lock guard(m_queue_lock);
@@ -55,10 +54,10 @@ class thread_pool
         }
           
           
-        thread_pool(const thread_pool&) = delete;
-        thread_pool(thread_pool&&) = delete;
-        thread_pool& operator = (const thread_pool&) = delete;
-        thread_pool& operator = (thread_pool&&) = delete;
+        ThreadPool(const ThreadPool&) = delete;
+        ThreadPool(ThreadPool&&) = delete;
+        ThreadPool& operator = (const ThreadPool&) = delete;
+        ThreadPool& operator = (ThreadPool&&) = delete;
           
         using work_item_t = function<void(void)>:
         void do_work(work_item_t wi)
@@ -71,7 +70,7 @@ class thread_pool
             m_condition.notify_one();
         }  
  private:
-        using work_item_ptr_t = unique_ptr(work_item_t>;
+        using work_item_ptr_t = unique_ptr<work_item_t>;
         using work_queue_t = queue<work_item_ptr_t>;
          
         work_queue_t m_queue;
@@ -81,3 +80,4 @@ class thread_pool
         using threads_t = vector<thread>;
         threads_t m_threads;
 };
+///////////////////////////////////////////////////////////////////////////////////
